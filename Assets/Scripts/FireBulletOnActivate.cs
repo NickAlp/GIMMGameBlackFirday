@@ -10,6 +10,7 @@ public class FireBulletOnActivate : MonoBehaviour
     public Transform spawnPoint;
     public float fireSpeed = 20;
     public GameObject muzzleFlashParticles;
+    public AudioSource gunshotSound;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +38,11 @@ public class FireBulletOnActivate : MonoBehaviour
             // Adjust the following line if the position is not aligned properly
             muzzleFlash.transform.parent = spawnPoint; // Make the muzzle flash a child of the spawn point
             Destroy(muzzleFlash, 1.0f); // Destroy the muzzle flash after 1 second (or adjust as needed)
+        }
+
+        if (gunshotSound != null) 
+        {
+            gunshotSound.Play(); // Play the gunshot sound
         }
     }
 }
