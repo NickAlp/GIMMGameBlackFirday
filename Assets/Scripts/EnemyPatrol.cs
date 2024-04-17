@@ -22,6 +22,7 @@ public class EnemyPatrol : EnemyState
 
     public override void Act() 
     {
+        eSc.EnemyPatrolState();
         if (eSc.health < eSc.maxHealth)
         {
             eSc.health += eSc.healthRegen * Time.deltaTime;
