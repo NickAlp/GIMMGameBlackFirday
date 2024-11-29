@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float forwardSpeed = 10f;  // Speed for moving forward
-    public float sideSpeed = 5f;      // Speed for moving left and right
+    public float sideSpeed = 5f; // Speed for moving left and right
     public float leftRightBoundary = 5f; // Limit how far left and right the player can move
     public float mouseSensitivity = 100f; // Sensitivity for mouse look
     public Transform playerCamera; // Assign the camera in the inspector
 
     private Rigidbody rb;
-    private float xRotation = 0f;
+    private float xRotation = 0f; // Vertical rotation (up and down)
+    private float yRotation = 0f;
 
     void Start()
     {
@@ -22,18 +22,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Constant forward movement along a fixed direction (global Z axis)
-        Vector3 forwardMove = Vector3.forward * forwardSpeed * Time.deltaTime;
-
-        // Left and right movement relative to the global axis (not affected by rotation)
+        // Left and right movement input
         float horizontalInput = Input.GetAxis("Horizontal"); // A/D or Left/Right
         Vector3 sideMove = Vector3.right * horizontalInput * sideSpeed * Time.deltaTime;
 
-        // Combine forward and side movement to create a movement vector
-        Vector3 finalMove = forwardMove + sideMove;
+        float verticalInput = Input.GetAxis("Vertical"); // A/D or Left/Right
+        Vector3 upMove = Vector3.right * horizontalInput * sideSpeed * Time.deltaTime;
 
-        // Move the player using Rigidbody
-        rb.MovePosition(rb.position + finalMove);
+        // Apply left and right movement
+        rb.MovePosition(rb.position + sideMove);
 
         // Restrict left and right movement within boundaries
         Vector3 clampedPosition = transform.position;
@@ -41,16 +38,20 @@ public class PlayerMovement : MonoBehaviour
         transform.position = clampedPosition;
 
         // Mouse look input
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
 
-        // Vertical rotation (up and down) for the camera only
+        // Calculate vertical rotation (up and down) for the camera
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f); // Prevent over-rotation
-        playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
-        // Horizontal rotation (left and right) applied to the player body for rotating the view
-        transform.Rotate(Vector3.up * mouseX);
+        yRotation -= mouseX;
+        yRotation = Mathf.Clamp(yRotation, -75f, 75f);
+
+        // Apply rotation to the camera for looking up and down
+        playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        transform.localRotation = Quaternion.Euler(0f, -yRotation, 0f);
+
     }
 }
 

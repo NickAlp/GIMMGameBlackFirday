@@ -706,10 +706,10 @@
     "m_Guid": {
         "m_GuidSerialized": "5e3b0486-2c2e-4ffe-9bfe-77b15b65e1d6"
     },
-    "m_Name": "Curve",
+    "m_Name": "CurveAmount",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "Curve",
-    "m_DefaultReferenceName": "_Curve",
+    "m_RefNameGeneratedByDisplayName": "CurveAmount",
+    "m_DefaultReferenceName": "_CurveAmount",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
@@ -1475,7 +1475,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "a8072d510c474ba8b357b6fb78b908f6",
     "m_Id": 0,
-    "m_DisplayName": "Curve",
+    "m_DisplayName": "CurveAmount",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
