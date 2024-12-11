@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public float sideSpeed = 5f; // Speed for moving left and right
     public float leftRightBoundary = 5f; // Limit how far left and right the player can move
+    public float upDownBoundary = 5f; // Limit how far left and right the player can move
     public float mouseSensitivity = 100f; // Sensitivity for mouse look
     public Transform playerCamera; // Assign the camera in the inspector
 
@@ -46,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -90f, 90f); // Prevent over-rotation
 
         yRotation -= mouseX;
-        yRotation = Mathf.Clamp(yRotation, -75f, 75f);
+        yRotation = Mathf.Clamp(yRotation, -90f, 90f);
 
         // Apply rotation to the camera for looking up and down
         playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);

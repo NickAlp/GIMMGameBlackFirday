@@ -7,29 +7,39 @@ using TMPro;
 
 public class SceneTransition : MonoBehaviour
 {
-    public GameObject menuContainer; // UI container to disable, e.g., MainMenu
-    public Image fadePanel; // Drag your FadePanel's Image component here
-    public TextMeshProUGUI backstoryText; // Drag the Text component for the backstory here
-    public float fadeDuration = 1.0f; // Duration of fade-in and fade-out
-    public float backstoryDuration = 30.0f; // Duration to display the backstory text
+    public GameObject menuContainer; 
+    public Image fadePanel; 
+    public TextMeshProUGUI backstoryText;
+    public Button skipButton; 
+    public float fadeDuration = 1.0f; 
+    public float backstoryDuration = 30.0f;
+
+    private bool skipPressed = false;
 
     public void StartGameTransition(string sceneName)
     {
+        if (menuContainer != null)
+        {
+            menuContainer.SetActive(false); 
+        }
+
+        if (skipButton != null)
+        {
+            skipButton.gameObject.SetActive(true); 
+            skipButton.onClick.AddListener(() => SkipBackstory(sceneName)); 
+        }
+
+        if (backstoryText != null)
+        {
+            backstoryText.gameObject.SetActive(true); 
+        }
         StartCoroutine(FadeOutAndShowBackstory(sceneName));
     }
 
     private IEnumerator FadeOutAndShowBackstory(string sceneName)
     {
-        // Disable the menu container
-        if (menuContainer != null)
-        {
-            menuContainer.SetActive(false); // Deactivate menu UI
-        }
-
-        // Fade to black
         float elapsedTime = 0f;
         Color panelColor = fadePanel.color;
-
         while (elapsedTime < fadeDuration)
         {
             elapsedTime += Time.deltaTime;
@@ -37,30 +47,78 @@ public class SceneTransition : MonoBehaviour
             fadePanel.color = panelColor;
             yield return null;
         }
-
-        // Display the backstory text
-        if (backstoryText != null)
+        if (backstoryText != null && !skipPressed)
         {
-            backstoryText.gameObject.SetActive(true); // Show the text
-            yield return new WaitForSeconds(backstoryDuration); // Wait for the backstory duration
-        }
+            float remainingTime = backstoryDuration;
 
-        // Fade out the backstory (optional)
-        elapsedTime = 0f;
-        if (backstoryText != null)
-        {
-            Color textColor = backstoryText.color;
-
-            while (elapsedTime < fadeDuration)
+            while (remainingTime > 0f && !skipPressed)
             {
-                elapsedTime += Time.deltaTime;
-                textColor.a = 1.0f - Mathf.Clamp01(elapsedTime / fadeDuration);
-                backstoryText.color = textColor;
+                remainingTime -= Time.deltaTime;
                 yield return null;
             }
         }
 
-        // Load the next scene
+        if (backstoryText != null)
+        {
+            StartCoroutine(FadeOutUIElement(backstoryText));
+        }
+
+        if (skipButton != null)
+        {
+            StartCoroutine(FadeOutUIElement(skipButton.GetComponent<Image>()));
+            TextMeshProUGUI buttonText = skipButton.GetComponentInChildren<TextMeshProUGUI>();
+            if (buttonText != null)
+            {
+                StartCoroutine(FadeOutUIElement(buttonText));
+            }
+        }
+
+        yield return new WaitForSeconds(1.0f);
+
         SceneManager.LoadScene(sceneName);
+    }
+
+    private void SkipBackstory(string sceneName)
+    {
+        skipPressed = true; 
+        StartCoroutine(SkipSequence(sceneName)); 
+    }
+
+    private IEnumerator SkipSequence(string sceneName)
+    {
+        if (backstoryText != null)
+        {
+            StartCoroutine(FadeOutUIElement(backstoryText));
+        }
+
+        if (skipButton != null)
+        {
+            StartCoroutine(FadeOutUIElement(skipButton.GetComponent<Image>()));
+            TextMeshProUGUI buttonText = skipButton.GetComponentInChildren<TextMeshProUGUI>();
+            if (buttonText != null)
+            {
+                StartCoroutine(FadeOutUIElement(buttonText));
+            }
+        }
+
+        yield return new WaitForSeconds(1.0f);
+
+        SceneManager.LoadScene(sceneName);
+    }
+
+    private IEnumerator FadeOutUIElement(Graphic uiElement)
+    {
+        float elapsedTime = 0f;
+        Color elementColor = uiElement.color;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            elementColor.a = 1.0f - Mathf.Clamp01(elapsedTime / fadeDuration);
+            uiElement.color = elementColor;
+            yield return null;
+        }
+
+        uiElement.gameObject.SetActive(false); // Deactivate the UI element after fading
     }
 }
