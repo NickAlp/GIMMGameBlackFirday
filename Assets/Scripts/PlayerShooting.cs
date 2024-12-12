@@ -9,6 +9,7 @@ public class PlayerShooting : MonoBehaviour
     public ParticleSystem muzzleFlash; // Assign the particle system in the inspector
     public float shootForce = 20f;
     public float shootCooldown = 0.5f; // Time in seconds between shots
+    public AudioSource shootAudio;
 
     private float lastShotTime = 0f;
 
@@ -47,6 +48,11 @@ public class PlayerShooting : MonoBehaviour
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
         rb.AddForce(shootPoint.forward * shootForce, ForceMode.Impulse);
         Destroy(projectile, 1f);
+
+        if (shootAudio != null)
+        {
+            shootAudio.Play(); // Play the shooting sound
+        }
     }
 }
 
